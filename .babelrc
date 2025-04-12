@@ -1,0 +1,8 @@
+{
+  "plugins": [
+    ["dotenv-import", {
+      "moduleName": "@env",
+      "path": ".env"
+    }]
+  ]
+}

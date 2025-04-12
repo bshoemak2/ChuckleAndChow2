@@ -1,0 +1,37 @@
+Starting Metro Bundler
+Static rendering is enabled. Learn more: https://docs.expo.dev/router/reference/static-rendering/
+λ Bundled 1116ms node_modules\expo-router\node\render.js (833 modules)
+Web Bundled 1493ms node_modules\expo-router\entry.js (857 modules)
+
+› web bundles (1):
+_expo/static/js/web/entry-19925d1813dbdffa1ffeda34a1ed0bc0.js (1.55 MB)
+
+› Static routes (26):
+/data (42.3 kB)
+/ (index) (59.1 kB)
+/styles (42.3 kB)
+/explore (45.5 kB)
+/_sitemap (36.2 kB)
+/useRecipe (42.3 kB)
+/+not-found (23.2 kB)
+/RecipeCard (42.3 kB)
+/LoginScreen (42.3 kB)
+/(tabs)/data (42.3 kB)
+/InputSection (42.3 kB)
+/(tabs) (59.1 kB)
+/useFavorites (42.3 kB)
+/FavoritesList (42.3 kB)
+/(tabs)/styles (42.3 kB)
+/(tabs)/explore (45.5 kB)
+/AffiliateSection (42.3 kB)
+/(tabs)/useRecipe (42.3 kB)
+/(tabs)/RecipeCard (42.3 kB)
+/(tabs)/LoginScreen (42.3 kB)
+/index_sav_04062025 (58.9 kB)
+/(tabs)/InputSection (42.3 kB)
+/(tabs)/useFavorites (42.3 kB)
+/(tabs)/FavoritesList (42.3 kB)
+/(tabs)/AffiliateSection (42.3 kB)
+/(tabs)/index_sav_04062025 (58.9 kB)
+
+Exported: dist
