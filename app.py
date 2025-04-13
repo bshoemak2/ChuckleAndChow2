@@ -471,12 +471,12 @@ def generate_recipe():
 @app.route('/<path:path>')
 def serve_frontend(path):
     logging.debug(f"Current working directory: {os.getcwd()}")
-    logging.debug(f"Build directory exists: {os.path.exists('build')}")
+    logging.debug(f"Checking build directory: build")
+    build_dir = 'build'
     logging.debug(f"Attempting to serve frontend for path: {path or 'index.html'}")
     if path and (path.startswith('generate_recipe') or path.startswith('ingredients') or path.startswith('api')):
         logging.debug(f"Routing to API: {path}")
         return app.send_static_file(path)  # Let Flask handle API routes
-    build_dir = 'build'
     try:
         if not os.path.exists(build_dir):
             logging.error(f"Build directory not found: {build_dir}")
@@ -489,7 +489,7 @@ def serve_frontend(path):
         if file_path != 'index.html':
             logging.debug("Falling back to index.html for SPA routing")
             return send_from_directory(build_dir, 'index.html')
-        return jsonify({"error": "Frontend index.html not found. Please check build process."}), 500
+        return jsonify({"error": f"Frontend index.html not found in {build_dir}. Please check build process."}), 500
     except Exception as e:
         logging.error(f"Error serving frontend: {str(e)}", exc_info=True)
         return jsonify({"error": f"Failed to serve frontend: {str(e)}"}), 500

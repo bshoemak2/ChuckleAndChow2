@@ -22,7 +22,15 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+      "bundler": "webpack",
+      "output": "single",
+      "build": {
+        "outputDir": "build"
+      }
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ]
   }
 }

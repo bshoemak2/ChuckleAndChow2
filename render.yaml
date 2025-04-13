@@ -7,8 +7,11 @@ services:
     buildCommand: |
       pip install -r requirements.txt
       yarn install
-      yarn build || (echo "Frontend build failed" && exit 1)
+      cd app
+      EXPO_WEB_BUILD_PATH=../build yarn expo build:web || (echo "Frontend build failed" && exit 1)
+      cd ..
       echo "Build directory contents:" && ls -la build || echo "No build directory"
+      echo "Web-build directory contents:" && ls -la web-build || echo "No web-build directory"
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
