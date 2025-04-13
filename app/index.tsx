@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
-  ScrollView,
   View,
   Text,
   Button,
-  StyleSheet,
   ActivityIndicator,
   Platform,
   Share,
   Linking,
   Image,
   TouchableOpacity,
-  Picker,
   Modal,
 } from 'react-native';
 import Animated, { Easing, FadeIn, FadeInUp } from 'react-native-reanimated';
@@ -20,6 +17,22 @@ import { Link } from 'expo-router';
 import { FavoritesList } from './FavoritesList';
 import { styles } from './_styles';
 import * as Clipboard from 'expo-clipboard';
+
+// Web fallback for ScrollView and Picker
+const ScrollView = Platform.OS === 'web' ? ({ children, style, contentContainerStyle }) => (
+  <div style={{ overflowY: 'auto', ...style }}>{React.Children.map(children, (child) => (
+    <div style={contentContainerStyle}>{child}</div>
+  ))}</div>
+) : require('react-native').ScrollView;
+const Picker = Platform.OS === 'web' ? ({ selectedValue, onValueChange, children, style }) => (
+  <select
+    value={selectedValue}
+    onChange={(e) => onValueChange(e.target.value)}
+    style={{ padding: 8, borderRadius: 4, ...style }}
+  >
+    {children}
+  </select>
+) : require('react-native').Picker;
 
 const AnimatedView = Platform.OS === 'web' ? View : Animated.View;
 
@@ -53,7 +66,7 @@ export default function HomeScreen() {
       { name: 'pork', emoji: '🥓' },
       { name: 'lamb', emoji: '🐑' },
       { name: 'pichana', emoji: '🥩' },
-      { name: 'churrasco', emoji: '🍖' },
+      { name:invited 'churrasco', emoji: '🍖' },
       { name: 'ribeye steaks', emoji: '🍽️' },
       { name: 'squirrel', emoji: '🐿️' },
       { name: 'rabbit', emoji: '🐰' },
@@ -268,7 +281,7 @@ export default function HomeScreen() {
     const currentRecipe = selectedFavorite || recipe;
     if (!currentRecipe) return;
     const shareText = currentRecipe.shareText || `${currentRecipe.title}\n${currentRecipe.ingredients.join('\n')}\n${currentRecipe.steps.join('\n')}`;
-    const url = 'https://recipegenerator-frontend.onrender.com/';
+    const url = 'https://chuckle-and-chow.onrender.com/';
     const fullMessage = `Get a load of this hogwash: ${shareText}\nCheck out my app: ${url} 🤠`;
     try {
       if (platform === 'default' || platform === 'more') {

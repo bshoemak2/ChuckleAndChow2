@@ -34,7 +34,7 @@ app.secret_key = os.getenv("SECRET_KEY", "your-secret-key")
 CORS(app, resources={
     r"/generate_recipe": {"origins": ["*"], "methods": ["GET", "POST", "OPTIONS"], "allow_headers": ["Content-Type", "Origin"]},
     r"/ingredients": {"origins": ["*"], "methods": ["GET", "OPTIONS"], "allow_headers": ["Content-Type", "Origin"]},
-    r"/": {"origins": ["*"], "methods": ["GET"]}
+    r"/api": {"origins": ["*"], "methods": ["GET"]}
 }, supports_credentials=True)
 
 limiter = Limiter(get_remote_address, app=app, default_limits=["100 per day", "20 per minute"], storage_uri="memory://")
@@ -350,8 +350,8 @@ INGREDIENT_CATEGORIES = {
     ], key=lambda x: x["name"])
 }
 
-@app.route('/', methods=['GET'])
-def home():
+@app.route('/api', methods=['GET'])
+def api_info():
     return jsonify({
         "message": "Welcome to the Chuckle & Chow Recipe API—Where Food Meets Funny!",
         "endpoints": {
@@ -470,12 +470,17 @@ def generate_recipe():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_frontend(path):
-    if path.startswith('generate_recipe') or path.startswith('ingredients'):
-        return app.handle_url(path)  # Let Flask handle API routes
+    if path and (path.startswith('generate_recipe') or path.startswith('ingredients') or path.startswith('api')):
+        return app.send_static_file(path)  # Let Flask handle API routes
     try:
+        logging.debug(f"Serving frontend for path: {path or 'index.html'}")
         return send_from_directory('build', path or 'index.html')
-    except FileNotFoundError:
+    except FileNotFoundError as e:
+        logging.error(f"File not found: build/{path or 'index.html'} - {str(e)}")
         return send_from_directory('build', 'index.html')  # Fallback for SPA routing
+    except Exception as e:
+        logging.error(f"Error serving frontend: {str(e)}")
+        return jsonify({"error": "Failed to serve frontend"}), 500
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
