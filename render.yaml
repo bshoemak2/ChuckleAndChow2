@@ -1,4 +1,4 @@
-echo "services:
+services:
   - type: web
     name: chuckle-and-chow
     env: python
@@ -8,12 +8,9 @@ echo "services:
       pip install -r requirements.txt
       yarn install
       yarn build
-    startCommand: |
-      gunicorn app:app --bind 0.0.0.0:\$PORT &
-      yarn serve -p \$PORT
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11
       - key: NODE_VERSION
         value: 18
-" > render.yaml

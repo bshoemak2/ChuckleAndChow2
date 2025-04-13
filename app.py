@@ -1,6 +1,6 @@
 import logging
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
@@ -465,6 +465,17 @@ def generate_recipe():
     except Exception as e:
         logging.error(f"Unexpected error in generate_recipe: {str(e)}", exc_info=True)
         return jsonify({"error": f"Unexpected error: {str(e)}—check the logs!"}), 500
+
+# Serve React frontend for non-API routes
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_frontend(path):
+    if path.startswith('generate_recipe') or path.startswith('ingredients'):
+        return app.handle_url(path)  # Let Flask handle API routes
+    try:
+        return send_from_directory('build', path or 'index.html')
+    except FileNotFoundError:
+        return send_from_directory('build', 'index.html')  # Fallback for SPA routing
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))

@@ -44,7 +44,7 @@ export default function HomeScreen() {
   const [error, setError] = useState(null);
   const [showCartModal, setShowCartModal] = useState(false);
 
-  const API_URL = 'http://localhost:5000';
+  const API_URL = 'https://chuckle-and-chow.onrender.com';
 
   const INGREDIENT_CATEGORIES = {
     meat: [
