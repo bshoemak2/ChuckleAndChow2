@@ -470,17 +470,29 @@ def generate_recipe():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_frontend(path):
+    logging.debug(f"Current working directory: {os.getcwd()}")
+    logging.debug(f"Build directory exists: {os.path.exists('build')}")
+    logging.debug(f"Attempting to serve frontend for path: {path or 'index.html'}")
     if path and (path.startswith('generate_recipe') or path.startswith('ingredients') or path.startswith('api')):
+        logging.debug(f"Routing to API: {path}")
         return app.send_static_file(path)  # Let Flask handle API routes
+    build_dir = 'build'
     try:
-        logging.debug(f"Serving frontend for path: {path or 'index.html'}")
-        return send_from_directory('build', path or 'index.html')
+        if not os.path.exists(build_dir):
+            logging.error(f"Build directory not found: {build_dir}")
+            return jsonify({"error": "Frontend build not found. Please check build process."}), 500
+        file_path = path or 'index.html'
+        logging.debug(f"Serving file: {os.path.join(build_dir, file_path)}")
+        return send_from_directory(build_dir, file_path)
     except FileNotFoundError as e:
-        logging.error(f"File not found: build/{path or 'index.html'} - {str(e)}")
-        return send_from_directory('build', 'index.html')  # Fallback for SPA routing
+        logging.error(f"File not found: {os.path.join(build_dir, file_path)} - {str(e)}")
+        if file_path != 'index.html':
+            logging.debug("Falling back to index.html for SPA routing")
+            return send_from_directory(build_dir, 'index.html')
+        return jsonify({"error": "Frontend index.html not found. Please check build process."}), 500
     except Exception as e:
-        logging.error(f"Error serving frontend: {str(e)}")
-        return jsonify({"error": "Failed to serve frontend"}), 500
+        logging.error(f"Error serving frontend: {str(e)}", exc_info=True)
+        return jsonify({"error": f"Failed to serve frontend: {str(e)}"}), 500
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))

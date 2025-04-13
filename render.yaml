@@ -8,6 +8,7 @@ services:
       pip install -r requirements.txt
       yarn install
       yarn build || (echo "Frontend build failed" && exit 1)
+      echo "Build directory contents:" && ls -la build || echo "No build directory"
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
